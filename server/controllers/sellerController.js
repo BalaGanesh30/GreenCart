@@ -9,7 +9,7 @@ export const sellerLogin = async (req, res) => {
       password === process.env.SELLER_PASSWORD
     ) {
       const token = generateToken(email);
-      res.status(201).cookie("sellerToken", token, {
+      res.cookie("sellerToken", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
