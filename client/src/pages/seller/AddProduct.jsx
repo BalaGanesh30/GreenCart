@@ -31,7 +31,7 @@ const AddProduct = () => {
         formData.append("images", files[i]);
       }
 
-      const { data } = await axios.post("/api/product/add", formData);
+      const { data } = await axios.post("/api/product/add", formData,{ withCredentials: true });
       if (data.success) {
         toast.success(data.message);
         setName("");
