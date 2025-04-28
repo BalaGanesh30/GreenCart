@@ -25,7 +25,7 @@ export const register = async (req, res) => {
 
     const token = generateToken(user._id);
 
-    res.status(201).cookie("token", token, {
+    res.cookie("token", token, {
       httpOnly: true, //to prevent javascript to access the cookie
       secure: process.env.NODE_ENV === "production", //use secure cookie in production
       sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", //CSRF protection
@@ -68,7 +68,7 @@ export const login = async (req, res) => {
 
     const token = generateToken(user._id);
 
-    res.status(201).cookie("token", token, {
+    res.cookie("token", token, {
       httpOnly: true, //to prevent javascript to access the cookie
       secure: process.env.NODE_ENV === "production", //use secure cookie in production
       sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", //CSRF protection
