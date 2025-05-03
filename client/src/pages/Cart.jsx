@@ -282,7 +282,14 @@ const Cart = () => {
                   </p>
                 ))}
                 <p
-                  onClick={() => navigate("/add-address")}
+                  onClick={() => {
+                    if (User) {
+                      navigate("/add-address");
+                    } else {
+                      toast.error("Please login to add an address");
+                      navigate("/login");
+                    }
+                  }}
                   className="text-primary text-center cursor-pointer p-2 hover:bg-primary/10"
                 >
                   Add address
