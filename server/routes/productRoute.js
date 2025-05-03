@@ -6,11 +6,11 @@ import {
   productList,
 } from "../controllers/productController.js";
 import { upload } from "../configs/multer.js";
-import { authSeller } from "../middlewares/authSeller.js";
+import { authenticateToken } from "../middlewares/authToken.js";
 const router = express.Router();
 
-router.post("/add", authSeller, upload.array(["images"]), addProduct);
-router.post("/stock", authSeller, changeStock);
+router.post("/add", authenticateToken, upload.array(["images"]), addProduct);
+router.post("/stock", authenticateToken, changeStock);
 router.get("/list", productList);
 router.get("/id", productById);
 

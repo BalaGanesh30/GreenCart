@@ -15,12 +15,13 @@ export const authenticateToken = async (req, res, next) => {
 
   try {
     const tokenDecode = jwt.verify(token, process.env.JWT_SECRET);
-
     if (tokenDecode.id) {
       req.userId = tokenDecode.id; // ✅ Attach to `req` directly
       next();
     } else {
-      return res.status(401).json({ success: false, message: "Not Authorized" });
+      return res
+        .status(401)
+        .json({ success: false, message: "Not Authorized" });
     }
   } catch (error) {
     console.log(error.message);

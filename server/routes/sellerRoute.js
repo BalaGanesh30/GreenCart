@@ -5,6 +5,7 @@ import {
   sellerLogout,
   registerSeller,
 } from "../controllers/sellerController.js";
+import { authenticateToken } from "../middlewares/authToken.js";
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ router.post("/register", registerSeller);
 
 // Existing routes
 router.post("/login", sellerLogin);
-router.get("/is-auth", isSellerAuth);
-router.get("/logout", sellerLogout);
+router.get("/is-auth", authenticateToken, isSellerAuth);
+router.get("/logout", authenticateToken, sellerLogout);
 
 export default router;

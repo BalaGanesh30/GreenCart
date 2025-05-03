@@ -33,7 +33,7 @@ export const registerSeller = async (req, res) => {
 
     // Send a response with the token and success message
     res
-      .cookie("sellerToken", token, {
+      .cookie("token", token, {
         httpOnly: true,
         secure: true,
         sameSite: "none",
@@ -73,7 +73,7 @@ export const sellerLogin = async (req, res) => {
 
     // Set token in cookie and send success response
     res
-      .cookie("sellerToken", token, {
+      .cookie("token", token, {
         httpOnly: true,
         secure: true,
         sameSite: "none",
@@ -90,6 +90,13 @@ export const sellerLogin = async (req, res) => {
 // Seller Auth Check: GET /api/seller/is-auth
 export const isSellerAuth = async (req, res) => {
   try {
+    const userId = req.userId;
+    const seller = await Seller.findOne({ email: userId });
+    if (!seller) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid Credentials" });
+    }
     res.status(200).json({ success: true });
   } catch (error) {
     console.log(error.message);
@@ -101,7 +108,7 @@ export const isSellerAuth = async (req, res) => {
 export const sellerLogout = async (req, res) => {
   try {
     res
-      .clearCookie("sellerToken", {
+      .clearCookie("token", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",

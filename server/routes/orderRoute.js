@@ -7,7 +7,6 @@ import {
   placeOrderRazorpay,
   verifyPayment,
 } from "../controllers/orderController.js";
-import { authSeller } from "../middlewares/authSeller.js";
 
 const router = express.Router();
 
@@ -16,6 +15,6 @@ router.post("/razorpay", authenticateToken, placeOrderRazorpay); // 🔄 Razorpa
 router.post("/verify", authenticateToken, verifyPayment); // ✅ Payment verification
 
 router.get("/user", authenticateToken, getUserOrders);
-router.get("/seller", authSeller, getAllOrders);
+router.get("/seller", authenticateToken, getAllOrders);
 
 export default router;
