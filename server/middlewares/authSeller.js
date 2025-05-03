@@ -5,7 +5,7 @@ export const authSeller = async (req, res, next) => {
 
   const { sellerToken } = req.cookies;
   if (!sellerToken) {
-    return res.status(401).json({ success: false, message: "Not Authorized" });
+    return res.status(401).json({ success: false, message: "Not valied" });
   }
 
   try {
