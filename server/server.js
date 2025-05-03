@@ -14,7 +14,7 @@ await connectDB();
 await connectCloudinary();
 
 //Allow Multiple Origins
-const allowedOrigins = ["http://localhost:5173","https://greencart-server-c7mk.onrender.com"];
+const allowedOrigins = ["http://localhost:5173","https://greencart-bg-frontend.onrender.com"];
 
 //Middleware configuration
 app.use(express.json());
