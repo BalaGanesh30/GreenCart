@@ -1,14 +1,19 @@
 import express from "express";
 import {
-  isSellerAuth,
   sellerLogin,
+  isSellerAuth,
   sellerLogout,
+  registerSeller,
 } from "../controllers/sellerController.js";
-import { authSeller } from "../middlewares/authSeller.js";
+
 const router = express.Router();
 
+// Register Seller Route
+router.post("/register", registerSeller);
+
+// Existing routes
 router.post("/login", sellerLogin);
-router.get("/is-auth", authSeller, isSellerAuth);
-router.get("/logout", authSeller, sellerLogout);
+router.get("/is-auth", isSellerAuth);
+router.get("/logout", sellerLogout);
 
 export default router;
