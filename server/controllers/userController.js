@@ -2,7 +2,7 @@ import { generateToken, authenticateToken } from "../middlewares/authToken.js";
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 
-//Register User : /api/user/register
+// Register User: POST /api/user/register
 export const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -17,23 +17,21 @@ export const register = async (req, res) => {
     if (existingUser) {
       return res
         .status(400)
-        .json({ success: false, message: "User is Already Exists..." });
+        .json({ success: false, message: "User Already Exists" });
     }
+
     const hashedPassword = await bcrypt.hash(password, 10);
-
     const user = await User.create({ name, email, password: hashedPassword });
-
     const token = generateToken(user._id);
 
-    res.cookie("token", token, {
-      httpOnly: true, //to prevent javascript to access the cookie
-      secure: process.env.NODE_ENV === "production", //use secure cookie in production
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", //CSRF protection
-      maxAge: 7 * 24 * 60 * 60 * 1000, //cookie expiration time
-    });
-
-    return res
-      .status(200)
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      })
+      .status(201)
       .json({ success: true, user: { email: user.email, name: user.name } });
   } catch (error) {
     console.log(error.message);
@@ -41,25 +39,25 @@ export const register = async (req, res) => {
   }
 };
 
-//Login User : /api/user/login
-
+// Login User: POST /api/user/login
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     if (!email || !password) {
       return res
         .status(400)
         .json({ success: false, message: "Email and Password are required" });
     }
-    const user = await User.findOne({ email });
 
+    const user = await User.findOne({ email });
     if (!user) {
       return res
         .status(401)
         .json({ success: false, message: "Invalid Email or Password" });
     }
-    const isMatch = await bcrypt.compare(password, user.password);
 
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res
         .status(401)
@@ -68,14 +66,13 @@ export const login = async (req, res) => {
 
     const token = generateToken(user._id);
 
-    res.cookie("token", token, {
-      httpOnly: true, //to prevent javascript to access the cookie
-      secure: process.env.NODE_ENV === "production", //use secure cookie in production
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", //CSRF protection
-      maxAge: 7 * 24 * 60 * 60 * 1000, //cookie expiration time
-    });
-
-    return res
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
       .status(200)
       .json({ success: true, user: { email: user.email, name: user.name } });
   } catch (error) {
@@ -84,11 +81,11 @@ export const login = async (req, res) => {
   }
 };
 
-//Check Auth : /api/user/is-auth
-
+// Check Auth: GET /api/user/is-auth
 export const isAuth = async (req, res) => {
   try {
-    const userId = req.userId; // ✅ Use this instead of req.body
+    const userId = req.userId;
+
     if (!userId) {
       return res
         .status(400)
@@ -109,17 +106,17 @@ export const isAuth = async (req, res) => {
   }
 };
 
-//Logout user :  /api/user/logout
-
+// Logout User: GET /api/user/logout
 export const logout = async (req, res) => {
   try {
-    res.clearCookie("token", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-    });
-
-    res.status(201).json({ success: true, message: "Logged Out" });
+    res
+      .clearCookie("token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+      })
+      .status(200)
+      .json({ success: true, message: "Logged Out" });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ success: false, message: error.message });
