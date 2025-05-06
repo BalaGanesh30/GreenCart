@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useAppContext } from "../../context/AppContext";
-import { assets } from "../../assets/assets";
-import { toast } from "react-hot-toast"; // Add this if you're using toast
+import { assets, dummyOrders } from "../../assets/assets";
 
 const Orders = () => {
-  const { Currency, axios } = useAppContext();
+  const { Currency, axios, IsSeller } = useAppContext();
   const [orders, setOrders] = useState([]);
 
   const fetchOrders = async () => {
@@ -21,11 +20,9 @@ const Orders = () => {
       );
     }
   };
-
   useEffect(() => {
     fetchOrders();
   }, []);
-
   return (
     <div className="no-scrollbar flex-1 h-[95vh] overflow-y-scroll w-5xl">
       <div className="md:p-10 p-4 space-y-4">
@@ -35,7 +32,6 @@ const Orders = () => {
             key={index}
             className="flex flex-col md:items-center md:flex-row gap-5 justify-between p-5 max-w-4xl rounded-md border border-gray-300"
           >
-            {/* Product Info */}
             <div className="flex gap-5 max-w-80">
               <img
                 className="w-12 h-12 object-cover"
@@ -43,12 +39,10 @@ const Orders = () => {
                 alt="boxIcon"
               />
               <div>
-                {order.items.map((item, itemIndex) => (
-                  <div key={itemIndex} className="flex flex-col">
+                {order.items.map((item, index) => (
+                  <div key={index} className="flex flex-col">
                     <p className="font-medium">
-                      {typeof item.product === "object" && item.product?.name
-                        ? item.product.name
-                        : "Product not found"}{" "}
+                      {item.product.name}{" "}
                       <span className="text-primary">x {item.quantity}</span>
                     </p>
                   </div>
@@ -56,33 +50,29 @@ const Orders = () => {
               </div>
             </div>
 
-            {/* Address Info */}
             <div className="text-sm md:text-base text-black/60">
               <p className="text-black/80">
-                {order.address?.firstName} {order.address?.lastName}
+                {order.address.firstName} {order.address.lastName}
               </p>
               <p>
-                {order.address?.street}, {order.address?.city}
+                {order.address.street}, {order.address.city},{" "}
               </p>
               <p>
-                {order.address?.state}, {order.address?.zipcode},{" "}
-                {order.address?.country}
+                {order.address.state},{order.address.zipcode},{" "}
+                {order.address.country}
               </p>
-              <p>{order.address?.phone}</p>
+              <p></p>
+              <p>{order.address.phone}</p>
             </div>
 
-            {/* Amount */}
             <p className="font-medium text-lg my-auto">
               {Currency}
               {order.amount}
             </p>
 
-            {/* Payment Info */}
             <div className="flex flex-col text-sm md:text-base text-black/60">
               <p>Method: {order.paymentType}</p>
-              <p>
-                Date: {new Date(order.createdAt).toLocaleDateString("en-IN")}
-              </p>
+              <p>Date: {new Date(order.createdAt).toLocaleDateString()}</p>
               <p>Payment: {order.isPaid ? "Paid" : "Pending"}</p>
             </div>
           </div>
